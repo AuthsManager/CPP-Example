@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/CPP-Example/.vs/CPP Example
+/CPP-Example/CPP Example/include
+/CPP-Example/CPP Example/libs/websocketpp
+/CPP-Example/packages/cpprestsdk.v141.2.10.12.1
