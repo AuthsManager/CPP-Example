@@ -1,89 +1,60 @@
 #include "Api.hpp"
-#include <cpprest/http_client.h>
-#include <cpprest/json.h>
-
-using namespace web;
-using namespace web::http;
-using namespace web::http::client;
-using namespace utility;
+#include "Utils.hpp"
+#include "Config.hpp"
+#include <iostream>
 
 bool Api::CheckAppExists(const std::string& appName, const std::string& ownerId, const std::string& appSecret) {
-    http_client client(U("http://localhost:8080"));
-    uri_builder builder(U("/auth/initiate"));
-
-    json::value requestData;
-    requestData[U("name")] = json::value::string(utility::conversions::to_utf16string(appName));
-    requestData[U("ownerId")] = json::value::string(utility::conversions::to_utf16string(ownerId));
-    requestData[U("secret")] = json::value::string(utility::conversions::to_utf16string(appSecret));
-
-    auto response = client.request(methods::POST, builder.to_string(), requestData).get();
-
-    if (response.status_code() == status_codes::NoContent) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    std::vector<std::pair<std::string, std::string>> data = {
+        {"name", appName},
+        {"ownerId", ownerId},
+        {"secret", appSecret}
+    };
+    
+    std::string jsonData = Utils::CreateJsonString(data);
+    int statusCode = Utils::SendHttpPost(server_host, server_port, "/auth/initiate", jsonData);
+    
+    return statusCode == 204; // NoContent
 }
 
 bool Api::CheckUserExists(const std::string& username, const std::string& password, const std::string& ownerId) {
-    http_client client(U("http://localhost:8080"));
-    uri_builder builder(U("/auth/login"));
-
-    json::value requestData;
-    requestData[U("username")] = json::value::string(utility::conversions::to_utf16string(username));
-    requestData[U("password")] = json::value::string(utility::conversions::to_utf16string(password));
-    requestData[U("ownerId")] = json::value::string(utility::conversions::to_utf16string(ownerId));
-
-    auto response = client.request(methods::POST, builder.to_string(), requestData).get();
-
-    if (response.status_code() == status_codes::NoContent) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    std::vector<std::pair<std::string, std::string>> data = {
+        {"username", username},
+        {"password", password},
+        {"ownerId", ownerId}
+    };
+    
+    std::string jsonData = Utils::CreateJsonString(data);
+    int statusCode = Utils::SendHttpPost(server_host, server_port, "/auth/login", jsonData);
+    
+    return statusCode == 204; // NoContent
 }
 
 bool Api::RegisterUser(const std::string& email, const std::string& username, const std::string& password, const std::string& license, const std::string& hwid, const std::string& ownerId) {
-    http_client client(U("http://localhost:8080"));
-    uri_builder builder(U("/auth/register"));
-
-    json::value registerData;
-    registerData[U("email")] = json::value::string(utility::conversions::to_utf16string(email));
-    registerData[U("username")] = json::value::string(utility::conversions::to_utf16string(username));
-    registerData[U("password")] = json::value::string(utility::conversions::to_utf16string(password));
-    registerData[U("license")] = json::value::string(utility::conversions::to_utf16string(license));
-    registerData[U("hwid")] = json::value::string(utility::conversions::to_utf16string(hwid));
-    registerData[U("ownerId")] = json::value::string(utility::conversions::to_utf16string(ownerId));
-
-    auto response = client.request(methods::POST, builder.to_string(), registerData).get();
-
-    if (response.status_code() == status_codes::NoContent) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    std::vector<std::pair<std::string, std::string>> data = {
+        {"email", email},
+        {"username", username},
+        {"password", password},
+        {"license", license},
+        {"hwid", hwid},
+        {"ownerId", ownerId}
+    };
+    
+    std::string jsonData = Utils::CreateJsonString(data);
+    int statusCode = Utils::SendHttpPost(server_host, server_port, "/auth/register", jsonData);
+    
+    return statusCode == 204; // NoContent
 }
 
 bool Api::CheckLicense(const std::string& license, const std::string& hwid, const std::string& ownerId) {
-    http_client client(U("http://localhost:8080"));
-    uri_builder builder(U("/auth/login"));
-
-    json::value loginData;
-    loginData[U("license")] = json::value::string(utility::conversions::to_utf16string(license));
-    loginData[U("hwid")] = json::value::string(utility::conversions::to_utf16string(hwid));
-    loginData[U("ownerId")] = json::value::string(utility::conversions::to_utf16string(ownerId));
-
-    auto response = client.request(methods::POST, builder.to_string(), loginData).get();
-    auto statusCode = response.status_code();
+    std::vector<std::pair<std::string, std::string>> data = {
+        {"license", license},
+        {"hwid", hwid},
+        {"ownerId", ownerId}
+    };
+    
+    std::string jsonData = Utils::CreateJsonString(data);
+    int statusCode = Utils::SendHttpPost(server_host, server_port, "/auth/login", jsonData);
     std::cout << "Status Code: " << statusCode << std::endl;
-
-    if (response.status_code() == status_codes::NoContent) {
-        return true;
-    }
-    else {
-        return false;
-    }
+    
+    return statusCode == 204; // NoContent
 }

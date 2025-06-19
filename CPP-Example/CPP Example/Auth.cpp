@@ -2,7 +2,7 @@
 #include "Api.hpp"
 #include "Utils.hpp"
 #include <iostream>
-#include "Config.cpp"
+#include "Config.hpp"
 
 void Auth::Login() {
     std::string username, password;

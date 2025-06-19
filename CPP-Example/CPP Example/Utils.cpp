@@ -1,8 +1,4 @@
 #include "Utils.hpp"
-#include <iostream>
-#include <regex>
-#include <Windows.h>
-#include <comutil.h>
 
 bool Utils::ValidateInput(const string& email, const string& username, const string& password) {
     regex usernameRegex("^[a-zA-Z][a-zA-Z0-9_-]{2,15}$");
@@ -27,7 +23,7 @@ bool Utils::ValidateInput(const string& email, const string& username, const str
     return true;
 }
 
-std::string Utils::GetHWID() {
+string Utils::GetHWID() {
     DWORD serialNumber = 0;
     if (GetVolumeInformationA(
         "C:\\",            // Root directory to retrieve volume information
@@ -39,9 +35,72 @@ std::string Utils::GetHWID() {
         nullptr,           // File system name buffer
         0                  // File system name buffer size
     )) {
-        return std::to_string(serialNumber);
+        return to_string(serialNumber);
     }
     else {
         return "Error getting HWID";
     }
+}
+
+string Utils::CreateJsonString(const vector<pair<string, string>>& data) {
+    ostringstream json;
+    json << "{";
+    for (size_t i = 0; i < data.size(); ++i) {
+        json << "\"" << data[i].first << "\":\"" << data[i].second << "\"";
+        if (i < data.size() - 1) json << ",";
+    }
+    json << "}";
+    return json.str();
+}
+
+int Utils::SendHttpPost(const string& host, int port, const string& path, const string& jsonData) {
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        return -1;
+    }
+
+    SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == INVALID_SOCKET) {
+        WSACleanup();
+        return -1;
+    }
+
+    sockaddr_in serverAddr;
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(port);
+    inet_pton(AF_INET, host.c_str(), &serverAddr.sin_addr);
+
+    if (connect(sock, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        closesocket(sock);
+        WSACleanup();
+        return -1;
+    }
+
+    ostringstream request;
+    request << "POST " << path << " HTTP/1.1\r\n";
+    request << "Host: " << host << ":" << port << "\r\n";
+    request << "Content-Type: application/json\r\n";
+    request << "Content-Length: " << jsonData.length() << "\r\n";
+    request << "Connection: close\r\n";
+    request << "\r\n";
+    request << jsonData;
+
+    string requestStr = request.str();
+    send(sock, requestStr.c_str(), requestStr.length(), 0);
+
+    char buffer[1024];
+    int bytesReceived = recv(sock, buffer, sizeof(buffer) - 1, 0);
+    buffer[bytesReceived] = '\0';
+
+    closesocket(sock);
+    WSACleanup();
+
+    string response(buffer);
+    size_t statusPos = response.find(" ");
+    if (statusPos != string::npos) {
+        string statusCode = response.substr(statusPos + 1, 3);
+        return stoi(statusCode);
+    }
+
+    return -1;
 }

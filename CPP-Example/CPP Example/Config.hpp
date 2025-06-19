@@ -3,8 +3,10 @@
 
 #include <string>
 
-extern const std::string APP_NAME;
-extern const std::string OWNER_ID;
-extern const std::string APP_SECRET;
+extern const std::string app_name;
+extern const std::string ownerid;
+extern const std::string app_secret;
+extern const std::string server_host;
+extern const int server_port;
 
-#endif 
+#endif

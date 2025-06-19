@@ -2,7 +2,7 @@
 #include <string>
 #include "Auth.hpp"
 #include "Api.hpp"
-#include "Config.cpp"
+#include "Config.hpp"
 
 using namespace std;
 
