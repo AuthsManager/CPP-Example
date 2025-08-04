@@ -25,7 +25,7 @@ int main() {
         cout << "=== Authentication Menu ===" << endl;
         cout << "1. Login (Username, Password)" << endl;
         cout << "2. Login (License)" << endl;
-        cout << "3. Register (Email, Username, Password, License)" << endl;
+        cout << "3. Register (Username, Password, License)" << endl;
         cout << "4. Show HWID" << endl;
         cout << "5. Exit" << endl << endl;
         cout << "Choose an option: ";
