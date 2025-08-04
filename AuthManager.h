@@ -21,9 +21,9 @@ bool AuthManager_ValidateInput(const char* email, const char* username, const ch
 const char* AuthManager_GetHWID();
 
 // Authentication interface
-void AuthManager_Login();
-void AuthManager_License();
-void AuthManager_Register();
+bool AuthManager_Login();
+bool AuthManager_License();
+bool AuthManager_Register();
 
 #ifdef __cplusplus
 }
