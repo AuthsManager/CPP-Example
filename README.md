@@ -1,6 +1,6 @@
 # CPP AuthManager Example
 
-A C++ application example for AuthManager.
+A C++ application example using the AuthManager library for authentication.
 
 ## Prerequisites
 
@@ -10,26 +10,23 @@ A C++ application example for AuthManager.
 
 ## Project Architecture
 
-The project is organized into several modules:
+The project is now organized in a simplified manner:
 
-- **`Config.cpp/hpp`** : Application configuration (API keys, server)
-- **`Api.cpp/hpp`** : Interface for HTTP API calls
-- **`Auth.cpp/hpp`** : Authentication and registration logic
-- **`Utils.cpp/hpp`** : Utility functions (validation, HWID, HTTP)
-- **`main.cpp`** : Application entry point
+- **`AuthManager.h`** : AuthManager library interface (C API)
+- **`CPP-Library.lib`** : Static library containing all authentication logic
+- **`CPP Example.cpp`** : Example application entry point
 
 ## Configuration
 
 ### 1. Server Configuration
 
-Modify the parameters in `Config.cpp`:
+Modify the parameters in `CPP Example.cpp`:
 
 ```cpp
-const std::string app_name = "your_app_name";
-const std::string ownerid = "your_owner_id";
-const std::string app_secret = "your_app_secret";
-const std::string server_host = "127.0.0.1"; // or your server
-const int server_port = 8080; // or your port
+// Configuration - You must fill these values
+string app_name = "your_app_name";     // TODO: Set your app name
+string owner_id = "your_owner_id";     // TODO: Set your owner ID
+string app_secret = "your_app_secret"; // TODO: Set your app secret
 ```
 
 ### 2. Visual Studio Configuration
@@ -61,54 +58,97 @@ msbuild "CPP Example.sln" /p:Configuration=Release /p:Platform=x64
 The application offers an interactive menu with the following options:
 
 1. **Login** : Authentication with username/password
-2. **Register** : Register a new user
-3. **License** : License verification
-4. **Exit** : Quit the application
+2. **License** : License verification
+3. **Register** : Register a new user
+4. **Show HWID** : Display hardware identifier
+5. **Exit** : Quit the application
 
 ### Usage Example
 
 ```
-1. Login
-2. Register
-3. License
-4. Exit
-Choose an option: 2
+=== Authentication Menu ===
+1. Login (Username, Password)
+2. Login (License)
+3. Register (Username, Password, License)
+4. Show HWID
+5. Exit
 
-Enter Email: user@example.com
+Choose an option: 3
+
+=== Registration ===
 Enter Username: testuser
 Enter Password: MyPassword123!
 Enter License: LICENSE-KEY-HERE
+
+=== REGISTRATION SUCCESSFUL ===
+Account created successfully! You can now login.
 ```
 
-## APIs Used
+## AuthManager API
 
-The application communicates with an authentication server via HTTP POST:
+The AuthManager library provides the following functions:
 
-- **`/auth/initiate`** : Application existence verification
-- **`/auth/login`** : User login
-- **`/auth/register`** : User registration
-- **`/auth/license`** : License verification
+### Configuration
+- **`AuthManager_SetConfig`** : Configure connection parameters
+
+### Core Authentication Functions
+- **`AuthManager_CheckAppExists`** : Verify application existence
+- **`AuthManager_CheckUserExists`** : Verify user existence
+- **`AuthManager_CheckLicense`** : Verify a license
+- **`AuthManager_RegisterUser`** : Register a new user
+
+### Utility Functions
+- **`AuthManager_ValidateInput`** : Validate user inputs
+- **`AuthManager_GetHWID`** : Get hardware identifier
+
+### Authentication Interface
+- **`AuthManager_Login`** : Interactive login interface
+- **`AuthManager_License`** : Interactive license verification interface
+- **`AuthManager_Register`** : Interactive registration interface
 
 ## Features
 
 ### Input Validation
 
-- **Email** : Valid email format
 - **Username** : 3-16 characters, starts with a letter
 - **Password** : 8+ characters with uppercase, lowercase, digit and special character
+
+### Security
+
+- **HWID** : Hardware identification for copy protection
+- **Secure Communication** : HTTP POST requests to authentication server
 
 ## File Structure
 
 ```
 CPP-Example/
-├── CPP Example/
-│   ├── Api.cpp/hpp          # API Interface
-│   ├── Auth.cpp/hpp         # Authentication
-│   ├── Config.cpp/hpp       # Configuration
-│   ├── Utils.cpp/hpp        # Utilities
-│   ├── main.cpp             # Entry Point
-│   ├── CPP Example.vcxproj  # Visual Studio Project
-│   └── packages.config      # Package Configuration
-├── CPP Example.sln          # Visual Studio Solution
+├── AuthManager.h            # Library interface
+├── CPP Example.cpp          # Example application
+├── CPP-Library.lib          # AuthManager static library
+├── CPP Example.vcxproj      # Visual Studio project
+├── CPP Example.vcxproj.filters # Project filters
+├── CPP Example.sln          # Visual Studio solution
 └── README.md                # This file
+```
+
+## Integration in Your Project
+
+To use AuthManager in your own project:
+
+1. Copy `AuthManager.h` and `CPP-Library.lib` to your project
+2. Add `AuthManager.h` to your includes
+3. Link `CPP-Library.lib` in your project settings
+4. Use AuthManager functions in your code
+
+```cpp
+#include "AuthManager.h"
+
+int main() {
+    // Check app existence
+    if (AuthManager_CheckAppExists("app", "owner", "secret")) {
+        // Use authentication functions
+        AuthManager_Login();
+    }
+    return 0;
+}
 ```
