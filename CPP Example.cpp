@@ -9,9 +9,9 @@ int main() {
     cout << "Powered by AuthManager" << endl << endl;
     
     // Configuration - You must fill these values
-    string app_name = "";     // TODO: Set your app name
-    string owner_id = "";     // TODO: Set your owner ID
-    string app_secret = "";   // TODO: Set your app secret
+    string app_name = "APP_NAME_HERE";     // TODO: Set your app name
+    string owner_id = "OWNER_ID_HERE";     // TODO: Set your owner ID
+    string app_secret = "APP_SECRET_HERE";   // TODO: Set your app secret
     
     // Check if app exists
     if (!AuthManager_CheckAppExists(app_name.c_str(), owner_id.c_str(), app_secret.c_str())) {
