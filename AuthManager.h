@@ -8,7 +8,7 @@ extern "C" {
 #endif
 
 // Configuration
-void AuthManager_SetConfig(const char* appName, const char* ownerId, const char* appSecret, const char* serverHost, int serverPort);
+void AuthManager_SetConfig(const char* appName, const char* ownerId, const char* appSecret, const char* serverHost, unsigned int serverPort); // if local then removed unsigned
 
 // Core authentication functions
 bool AuthManager_CheckAppExists(const char* appName, const char* ownerId, const char* appSecret);
